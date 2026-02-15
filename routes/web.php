@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FavoriteController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,8 +27,12 @@ Route::get('lang/{locale}', function ($locale) {
 Route::get('/login', 'AuthController@showLogin')->name('login');
 Route::get('/register', 'AuthController@showRegister')->name('register');
 
+Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorite.list');
+Route::post('/favorite/add', [FavoriteController::class, 'add'])->name('favorite.add');
+Route::post('/favorite/remove', [FavoriteController::class, 'remove'])->name('favorite.remove');
 
 Route::post('/login', 'AuthController@login');
+Route::post('/register', 'AuthController@register')->name('register');
 Route::get('/logout', 'AuthController@logout')->name('logout');
 
 Route::group(['middleware' => 'auth.session'], function() {

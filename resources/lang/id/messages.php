@@ -26,4 +26,9 @@ return [
     'favorites' => 'Favorit Saya',
     'logout' => 'Keluar',
     'fav_success' => 'Berhasil menambahkan :title ke daftar favorit!',
+    'favorite_subtitle' => 'Koleksi film yang telah Anda simpan.',
+    'no_favorites' => 'Belum ada film favorit.',
+    'browse_movies' => 'Cari film sekarang →',
+    'confirm_remove' => 'Hapus film ini dari daftar favorit Anda?',
+    'account' => 'Akun',
 ];

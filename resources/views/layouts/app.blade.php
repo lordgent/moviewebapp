@@ -11,13 +11,8 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .dropdown:hover .dropdown-menu { display: block; }
-        
-        /* Animasi halus untuk Loader */
         .loader-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="bg-[#f8fafc] text-gray-900 min-h-screen">
@@ -116,22 +111,21 @@
 
     <script>
         $(document).ready(function() {
+            // CSRF Token Global Setup
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
+            // Smooth Language Switch Loader
             $('.lang-link').on('click', function(e) {
                 e.preventDefault();
-                
                 let url = $(this).attr('href');
-                
                 $('#page-loader').removeClass('hidden').addClass('flex loader-fade-in');
-                
                 setTimeout(function() {
                     window.location.href = url;
-                },3000);
+                }, 800); // 3000ms is too long for UX, 800ms is perfect
             });
         });
     </script>

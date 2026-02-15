@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    restart: unless-stopped
+    env_file: .env            
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-net
+
+  webserver:
+    image: nginx:alpine
+    container_name: laravel-webserver
+    restart: unless-stopped
+    ports:
+      - "5002:80"
+    volumes:
+      - .:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - laravel-net
+    depends_on:
+      - app
+
+networks:
+  laravel-net:
+    driver: bridge

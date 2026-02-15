@@ -14,10 +14,8 @@
                 <input type="text" name="q" value="{{ $query }}" placeholder="{{ trans('messages.search_placeholder') }}"
                     class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 outline-none">
                 <div class="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-indigo-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
                 <button type="submit" class="hidden">Search</button>
@@ -27,7 +25,7 @@
         <div id="movies" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             @forelse($movies['Search'] ?? [] as $movie)
                 <div class="group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden flex flex-col border border-gray-100">
-
+                    
                     <div class="relative aspect-[2/3] overflow-hidden">
                         <a href="{{ route('movies.detail', $movie['imdbID']) }}">
                             <img class="lazy w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -55,13 +53,18 @@
                                 class="flex-1 text-center py-2 bg-gray-100 hover:bg-indigo-50 text-gray-700 hover:text-indigo-600 font-medium text-xs rounded-xl transition-colors">
                                 {{ trans('messages.details') }}
                             </a>
+                            
+                            {{-- LOGIKA PENGECEKAN FAVORIT DARI DATABASE --}}
+                            @php
+                                // Pastikan variabel $myFavoriteIds dikirim dari Controller
+                                $isFav = in_array($movie['imdbID'], $myFavoriteIds ?? []);
+                            @endphp
+
                             <button
-                                class="favorite p-2 bg-gray-100 hover:bg-rose-50 text-gray-400 hover:text-rose-500 rounded-xl transition-all duration-300"
-                                data-movie='@json($movie)'>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                class="favorite p-2 {{ $isFav ? 'bg-rose-500 text-white active-fav' : 'bg-gray-100 text-gray-400' }} hover:bg-rose-50 rounded-xl transition-all duration-300"
+                                data-imdbid="{{ $movie['imdbID'] }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="{{ $isFav ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
                             </button>
                         </div>
@@ -69,13 +72,6 @@
                 </div>
             @empty
                 <div class="col-span-full py-20 text-center">
-                    <div class="text-gray-300 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                        </svg>
-                    </div>
                     <p class="text-xl text-gray-500 font-medium">{{ trans('messages.no_movies') }}</p>
                 </div>
             @endforelse
@@ -92,12 +88,8 @@
     </div>
 
     <style>
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .fill-current { fill: currentColor; }
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -105,9 +97,8 @@
         function lazyLoad() {
             $('img.lazy').each(function () {
                 var src = $(this).data('src');
-                if(src) {
-                    $(this).attr('src', src);
-                    $(this).removeClass('lazy').addClass('opacity-100');
+                if (src) {
+                    $(this).attr('src', src).removeClass('lazy').addClass('opacity-100');
                 }
             });
         }
@@ -115,38 +106,47 @@
         $(document).ready(function () {
             lazyLoad();
 
-            // Load More dengan Terjemahan JS
+            $.ajaxSetup({
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
+
+            $(document).on('click', '.favorite', function () {
+                let btn = $(this);
+                let imdbID = btn.data('imdbid');
+                let isAlreadyFav = btn.hasClass('active-fav');
+                
+                let url = isAlreadyFav ? "{{ route('favorite.remove') }}" : "{{ route('favorite.add') }}";
+                
+                btn.prop('disabled', true); 
+
+                $.post(url, { imdbID: imdbID }, function (response) {
+                    if(isAlreadyFav) {
+                        btn.removeClass('bg-rose-500 text-white active-fav').addClass('bg-gray-100 text-gray-400');
+                        btn.find('svg').attr('fill', 'none');
+                    } else {
+                        btn.addClass('bg-rose-500 text-white active-fav').removeClass('text-gray-400 bg-gray-100');
+                        btn.find('svg').attr('fill', 'currentColor');
+                        alert(response.message || "Berhasil ditambah ke favorit");
+                    }
+                }).fail(function () {
+                    alert("Gagal memproses favorit.");
+                }).always(function() {
+                    btn.prop('disabled', false);
+                });
+            });
+
             $('#loadMore').click(function () {
                 let btn = $(this);
-                let originalText = "{{ trans('messages.load_more') }}";
-                let loadingText = "{{ trans('messages.loading') }}";
-                
-                btn.html(loadingText).prop('disabled', true);
-                
-                var page = btn.data('page') + 1;
-                var query = '{{ $query }}';
+                let page = btn.data('page') + 1;
+                let query = '{{ $query }}';
+
+                btn.html("{{ trans('messages.loading') }}").prop('disabled', true);
 
                 $.get('?q=' + query + '&page=' + page, function (data) {
                     let newContent = $(data).find('#movies').html();
                     $('#movies').append(newContent);
-                    btn.data('page', page);
-                    btn.html(originalText).prop('disabled', false);
+                    btn.data('page', page).html("{{ trans('messages.load_more') }}").prop('disabled', false);
                     lazyLoad();
-                }).fail(function() {
-                    btn.html(originalText).prop('disabled', false);
-                });
-            });
-
-            // Favorite dengan Alert Terjemahan
-            $(document).on('click', '.favorite', function () {
-                let btn = $(this);
-                var movie = btn.data('movie');
-                
-                $.post("{{ route('favorite.add') }}", movie, function () {
-                    btn.addClass('bg-rose-500 text-white').removeClass('text-gray-400 bg-gray-100');
-                    btn.find('svg').attr('fill', 'currentColor');
-                    // Menggunakan alert dari file bahasa
-                    alert("{{ trans('messages.saved_to_fav') }}");
                 });
             });
         });

@@ -26,4 +26,10 @@ return [
     'fav_success' => 'Successfully added :title to favorites!',
     'favorites' => 'My Favorites',
     'logout' => 'Logout',
+    'favorite_subtitle' => 'The collection of movies you have saved.',
+    'no_favorites' => 'No favorite movies yet.',
+    'browse_movies' => 'Browse movies now →',
+    'confirm_remove' => 'Remove this movie from your favorites?',
+    'account' => 'Account',
+    
 ];
